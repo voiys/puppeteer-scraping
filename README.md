@@ -10,3 +10,6 @@ How to use:
 - copy link from browser address bar (the link should look like "<beginning of the link>offset=<number [preferably 0]>;")
 - paste it into the script
 - run the script :) 
+
+Known bugs:
+- for some reason it will get 2.5 times more reviews than you set in the limit (for example, instead of 100 it gets 250)
