@@ -2,16 +2,17 @@ const puppeteer = require('puppeteer');
 const fs = require('fs'); //writing to txt file
 
 //go to hotel page to get offset page link
-const url = 'https://www.booking.com/reviewlist.hr.html?aid=304142;label=gen173nr-1FCAEoggI46AdIM1gEaGWIAQGYARC4ARfIAQzYAQHoAQH4AQuIAgGoAgO4Av-JnOUFwAIB;sid=b449df7e7e0d13602044e191190ed921;cc1=hr;dist=1;pagename=inn-forty-two;srpvid=d718354aca3c02cf;type=total&;offset=0;' //'offset=<number>;' has to be at the end of the link or else it won't work 
-const hotelName = 'ime hotela'; //put hotel name here
+const url = 'https://www.booking.com/reviewlist.en-gb.html?aid=304142;label=gen173nr-1FCAEoggI46AdIM1gEaGWIAQGYAQm4ARfIAQzYAQHoAQH4AQuIAgGoAgO4ArSfrOUFwAIB;sid=b449df7e7e0d13602044e191190ed921;cc1=hr;dist=1;pagename=europa-zagreb;srpvid=221d47ddf07d03a3;type=total&;offset=0;' //'offset=<number>;' has to be at the end of the link or else it won't work 
+
+const hotelName = 'Hotel Europa'; //put hotel name here
 const hotelRating = '3'; //put number of stars here
-const hotelLocation = 'lokacija'; //put hotel location here
+const hotelLocation = 'Zagreb'; //put hotel location here
 const txtPath = './korpus.txt'; //change filename
-const reviewLimit = 200; //change the number of reviews you want to get
+const reviewLimit = 60; //change the number of reviews you want to get (* actually gets 2.5 times that amount, so keep that in mind)
 const delimiter = '|'; //select your delimiter
 
 let scrapeReviews = async (firstUrl, scrapingLimit) => {
-
+  console.log('started scraping...')
   const getAllReviews = async url => {
     const page = await browser.newPage();
     await page.goto(url);
@@ -28,19 +29,23 @@ let scrapeReviews = async (firstUrl, scrapingLimit) => {
         let score = post.querySelector('.bui-review-score__badge').innerText.trim();
         let comments = [...post.getElementsByClassName('c-review__body')].map(comment => comment.innerText.trim());
 
-        if(username === undefined || username == '') {
+        if(username === undefined || username == '' || username === null) {
           username = '-'
         }
 
-        if(country === undefined || country == '') {
+        if(country === undefined || country == '' || country === null) {
           country = '-'
         }
 
-        if(score === undefined || score == '') {
+        if(score === undefined || score == '' || score === null) {
           score = '-'
         }
 
-        if(comments[1] === undefined ||comments[1].trim() == '') {
+        if(comments[0] === undefined ||comments[0].trim() == '' || comments[0] === null) {
+          comments[0] = '-'
+        }
+
+        if(comments[1] === undefined ||comments[1].trim() == '' || comments[1] === null) {
           comments[1] = '-'
         }
 
@@ -92,8 +97,6 @@ let scrapeReviews = async (firstUrl, scrapingLimit) => {
 }
 
 scrapeReviews(url, reviewLimit).then(reviews => {  
-
-  console.log('started scraping...')
 
   reviews.forEach(review => {
 
